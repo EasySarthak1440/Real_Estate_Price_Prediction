@@ -4,3 +4,10 @@ numpy
 scikit-learn
 joblib
 gunicorn
+flask-sqlalchemy
+flask-login
+flask-bcrypt
+flask-mail
+authlib
+requests
+python-dotenv

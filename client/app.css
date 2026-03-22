@@ -131,3 +131,93 @@ h2 {
 body, html {
   height: 100%;
 }
+
+/* Auth and Nav Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 1rem 2rem;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links a, .nav-links span {
+    color: white;
+    margin-left: 1.5rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    padding-top: 80px;
+}
+
+.auth-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 350px;
+    z-index: 10;
+}
+
+.auth-box h2 {
+    margin-top: 0;
+    text-align: center;
+    color: #333;
+}
+
+.auth-box input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.auth-box button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.google-btn {
+    background-color: #4285F4 !important;
+}
+
+.auth-box p {
+    text-align: center;
+    margin-top: 15px;
+    color: #666;
+}
+
+.auth-box a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+#mainApp {
+    padding-top: 100px;
+}
