@@ -59,6 +59,7 @@ function onClickedEstimatePrice() {
 
 // Auth Logic
 function checkAuthStatus() {
+    console.log("Checking auth status...");
     var url = BACKEND_URL + "/check_auth";
     $.get(url, function(data) {
         if (data.is_authenticated) {
@@ -71,6 +72,11 @@ function checkAuthStatus() {
             $("#authContainer").show();
             updateNav(false);
         }
+    }).fail(function() {
+        console.log("Auth check failed (backend might be sleeping). Showing login screen.");
+        $("#mainApp").hide();
+        $("#authContainer").show();
+        updateNav(false);
     });
 }
 
