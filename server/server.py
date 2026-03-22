@@ -26,8 +26,14 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 
+# --- CROSS-SITE SESSION CONFIG ---
+app.config.update(
+    SESSION_COOKIE_SAMESITE='None',
+    SESSION_COOKIE_SECURE=True,
+)
+
 # Enable CORS (allow credentials for session)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=[os.environ.get('FRONTEND_URL', '*').split('/client')[0], "https://bangalore-house-price-frontend.vercel.app"])
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
@@ -96,9 +102,16 @@ def forgot_password():
     email = data.get('email')
     user = User.query.filter_by(email=email).first()
     if user:
-        # In a real app, generate a token and send email
-        # For simplicity, just return success if user exists
-        return jsonify({"message": "Reset link sent to your email"}), 200
+        try:
+            msg = Message('Password Reset Request',
+                          sender=app.config['MAIL_USERNAME'],
+                          recipients=[email])
+            msg.body = f"Hello {user.username},\n\nYou requested a password reset. Your account is active. Please login to use the service.\n\n(Note: In a full production app, this would contain a secure reset link)."
+            mail.send(msg)
+            return jsonify({"message": "Reset email sent successfully"}), 200
+        except Exception as e:
+            print(f"Mail Error: {str(e)}")
+            return jsonify({"message": f"Error sending email: {str(e)}"}), 500
     return jsonify({"message": "Email not found"}), 404
 
 @app.route('/get_location_names', methods=['GET'])
