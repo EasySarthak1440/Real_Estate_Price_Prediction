@@ -1,65 +1,68 @@
+# Bangalore Home Price Prediction 🏠
+
 ![](BHP_website.PNG)
 
-This data science project series walks through step by step process of how to build a real estate price prediction website. We will first build a model using sklearn and linear regression using banglore home prices dataset from kaggle.com. Second step would be to write a python flask server that uses the saved model to serve http requests. Third component is the website built in html, css and javascript that allows user to enter home square ft area, bedrooms etc and it will call python flask server to retrieve the predicted price. During model building we will cover almost all data science concepts such as data load and cleaning, outlier detection and removal, feature engineering, dimensionality reduction, gridsearchcv for hyperparameter tunning, k fold cross validation etc. Technology and tools wise this project covers,
+This data science project series walks through a step-by-step process of how to build a real estate price prediction website. We first built a model using **sklearn** and **linear regression** using the Bangalore home prices dataset from Kaggle.com. The second step involved writing a **Python Flask server** that uses the saved model to serve HTTP requests. The third component is a website built in **HTML, CSS, and JavaScript** that allows users to enter home square ft area, bedrooms, etc., and calls the Flask server to retrieve the predicted price.
 
-1. Python
-2. Numpy and Pandas for data cleaning
-3. Matplotlib for data visualization
-4. Sklearn for model building
-5. Jupyter notebook, visual studio code and pycharm as IDE
-6. Python flask for http server
-7. HTML/CSS/Javascript for UI
+## 🚀 Live Demo
+- **Frontend (Vercel):** [https://bangalore-house-price-frontend.vercel.app](https://bangalore-house-price-frontend.vercel.app)
+- **Backend (Render):** [https://bangalore-house-price-backend.onrender.com/health](https://bangalore-house-price-backend.onrender.com/health)
 
-# Deploy this app to cloud (AWS EC2)
+> **Note:** The backend is hosted on Render's free tier, which means it may take 30-50 seconds to "wake up" on the first request if it hasn't been used recently.
 
-1. Create EC2 instance using amazon console, also in security group add a rule to allow HTTP incoming traffic
-2. Now connect to your instance using a command like this,
+## 🛠️ Technology & Tools
+1. **Python** (3.10+)
+2. **Numpy and Pandas** for data cleaning
+3. **Matplotlib** for data visualization
+4. **Sklearn** for model building (Linear Regression)
+5. **Jupyter Notebook** for exploratory data analysis
+6. **Python Flask** for the production API
+7. **Gunicorn** as the WSGI HTTP Server
+8. **HTML/CSS/Javascript** for the UI
+
+## ☁️ Free Deployment (2025 Strategy)
+
+### 1. Backend: Render
+The backend is deployed on **Render** as a Web Service.
+- **Root Directory:** `server`
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:** `gunicorn server:app`
+- **Environment Variable:** `PYTHON_VERSION=3.10.0`
+
+### 2. Frontend: Vercel
+The frontend is deployed on **Vercel** as a static site.
+- **Root Directory:** `client`
+- **Backend URL Configuration:** The `BACKEND_URL` in `client/app.js` is updated to point to the Render service.
+
+---
+
+## 🏗️ Manual Deployment (Legacy AWS EC2)
+
+1. Create EC2 instance using Amazon console, also in security group add a rule to allow HTTP incoming traffic.
+2. Connect to your instance:
+```bash
+ssh -i "YourKey.pem" ubuntu@your-ec2-ip
 ```
-ssh -i "C:\Users\Viral\.ssh\Banglore.pem" ubuntu@ec2-3-133-88-210.us-east-2.compute.amazonaws.com
-```
-3. nginx setup
-   1. Install nginx on EC2 instance using these commands,
-   ```
+3. Nginx setup:
+   ```bash
    sudo apt-get update
    sudo apt-get install nginx
-   ```
-   2. Above will install nginx as well as run it. Check status of nginx using
-   ```
-   sudo service nginx status
-   ```
-   3. Here are the commands to start/stop/restart nginx
-   ```
    sudo service nginx start
-   sudo service nginx stop
-   sudo service nginx restart
    ```
-   4. Now when you load cloud url in browser you will see a message saying "welcome to nginx" This means your nginx is setup and running.
-4. Now you need to copy all your code to EC2 instance. You can do this either using git or copy files using winscp. We will use winscp. You can download winscp from here: https://winscp.net/eng/download.php
-5. Once you connect to EC2 instance from winscp (instruction in a youtube video), you can now copy all code files into /home/ubuntu/ folder. The full path of your root folder is now: **/home/ubuntu/BangloreHomePrices**
-6.  After copying code on EC2 server now we can point nginx to load our property website by default. For below steps,
-    1. Create this file /etc/nginx/sites-available/bhp.conf. The file content looks like this,
-    ```
+4. Point Nginx to load the property website by creating `/etc/nginx/sites-available/bhp.conf`:
+    ```nginx
     server {
-	    listen 80;
-            server_name bhp;
-            root /home/ubuntu/BangloreHomePrices/client;
-            index app.html;
-            location /api/ {
-                 rewrite ^/api(.*) $1 break;
-                 proxy_pass http://127.0.0.1:5000;
-            }
+        listen 80;
+        server_name bhp;
+        root /home/ubuntu/BangloreHomePrices/client;
+        index index.html;
+        location /api/ {
+             rewrite ^/api(.*) $1 break;
+             proxy_pass http://127.0.0.1:5000;
+        }
     }
     ```
-    2. Create symlink for this file in /etc/nginx/sites-enabled by running this command,
-    ```
-    sudo ln -v -s /etc/nginx/sites-available/bhp.conf
-    ```
-    3. Remove symlink for default file in /etc/nginx/sites-enabled directory,
-    ```
-    sudo unlink default
-    ```
-    4. Restart nginx,
-    ```
-    sudo service nginx restart
-    ```
-
+5. Restart Nginx:
+   ```bash
+   sudo service nginx restart
+   ```
