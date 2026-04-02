@@ -15,7 +15,14 @@ import requests
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(16))
+
+secret_key = os.environ.get('SECRET_KEY')
+if not secret_key:
+    raise RuntimeError(
+        "SECRET_KEY environment variable is not set. "
+        "Set it in .env before starting the server."
+    )
+app.config['SECRET_KEY'] = secret_key
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///site.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -33,7 +40,15 @@ app.config.update(
 )
 
 # Enable CORS (allow credentials for session)
-CORS(app, supports_credentials=True, origins=[os.environ.get('FRONTEND_URL', '*').split('/client')[0], "https://bangalore-house-price-frontend.vercel.app"])
+frontend_url = os.environ.get('FRONTEND_URL')
+if not frontend_url:
+    raise RuntimeError(
+        "FRONTEND_URL environment variable is not set. "
+        "Set it in .env before starting the server when using credentials."
+    )
+# Extract base URL without path for CORS
+frontend_base = frontend_url.split('/client')[0] if '/client' in frontend_url else frontend_url
+CORS(app, supports_credentials=True, origins=[frontend_base, "https://bangalore-house-price-frontend.vercel.app"])
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
